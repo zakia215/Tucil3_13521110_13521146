@@ -1,0 +1,17 @@
+8
+SimpangTuguAsiaAfrika -6.921210 107.607689
+MuseumAsiaAfrika -6.921023 107.609848
+BragaCityWalk -6.916968 107.609178
+MercureCityCentre -6.923878 107.611800
+SudirmanStreetMarket -6.920395 107.600530
+PendopoKota -6.922503 107.607066
+PasarBaru -6.917585 107.604353
+BatagorKingsley -6.919173 107.615111
+0 1 0 1 1 1 1 0
+1 0 1 1 0 0 0 0
+0 1 0 0 0 0 0 1
+1 1 0 0 0 1 0 0
+1 0 0 0 0 0 1 0
+1 0 0 1 0 0 0 0
+1 0 0 0 1 0 0 0
+0 0 1 0 0 0 0 0

@@ -1,10 +1,13 @@
 import os
-class Input:
+from haversine import haversine, Unit
+
+class Graph:
     def __init__ (self):
         self.n = 0
         self.nodes = []
         self.coords = {}
         self.adj = []
+        self.weighted = []
 
     def read_input(self, file_name: str):
         with open(os.getcwd() + file_name, 'r') as file:
@@ -23,20 +26,45 @@ class Input:
                 line = line.split()
                 line = [int(x) for x in line]
                 self.adj.append(line)
+            
        
     def read_input_coords(self, file_name: str): 
-        self.read_input(file_name)
+        self.coords = {}
         with open(os.getcwd() + file_name, 'r') as file:
             file.readline()
             # read the nodes
-            for _ in range(self.n):
+            for i in range(self.n):
                 line = file.readline()
                 line = line.split()
-                node = line[0]
-            # add coords to dictionary
+                # add coords to dictionary
                 lat = line[1]
                 long = line[2]
-                self.coords[node] = (lat, long)
+                self.coords[i] = (lat, long)
+    
+    def calculate_weighted(self): 
+        distance = {}
+        self.weighted = []
+        for i in range(len(self.adj)):
+            line = []
+            for j in range(len(self.adj[i])):
+                if self.adj[i][j] == 1:
+                    string_key = self.nodes[i] + self.nodes[j]
+                    flipped_key = self.nodes[j] + self.nodes[i]
+                    if string_key in distance:
+                        line.append(distance[string_key])
+                    elif flipped_key in distance:
+                        line.append(distance[flipped_key])
+                    else :
+                        coord_a = self.coords[i]
+                        coord_b = self.coords[j]
+                        float_a = (float(coord_a[0]), float(coord_a[1]))
+                        float_b = (float(coord_b[0]), float(coord_b[1]))
+                        res = haversine(float_a, float_b);
+                        distance[string_key] = res
+                        line.append(distance[string_key])
+                else:
+                    line.append(0)
+            self.weighted.append(line)
         
     def get_nodes(self):
         return self.nodes
@@ -46,10 +74,13 @@ class Input:
     
     def get_coords(self):
         return self.coords
+    
+    def get_weighted(self):
+        return self.weighted
        
 
 if __name__ == "__main__":
-    input = Input()
+    input = Graph()
 
     input.read_input('/test/input.txt')
 
