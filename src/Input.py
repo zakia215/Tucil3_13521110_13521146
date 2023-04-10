@@ -10,7 +10,7 @@ class Graph:
         self.weighted = []
 
     def read_input(self, file_name: str):
-        with open(os.getcwd() + file_name, 'r') as file:
+        with open(file_name, 'r') as file:
             line = file.readline()
             # number of nodes
             self.n = int(line)
@@ -29,8 +29,8 @@ class Graph:
             
        
     def read_input_coords(self, file_name: str): 
-        self.coords = {}
-        with open(os.getcwd() + file_name, 'r') as file:
+        self.read_input(file_name)
+        with open(file_name, 'r') as file:
             file.readline()
             # read the nodes
             for i in range(self.n):
@@ -59,7 +59,7 @@ class Graph:
                         coord_b = self.coords[j]
                         float_a = (float(coord_a[0]), float(coord_a[1]))
                         float_b = (float(coord_b[0]), float(coord_b[1]))
-                        res = haversine(float_a, float_b);
+                        res = haversine(float_a, float_b)
                         distance[string_key] = res
                         line.append(distance[string_key])
                 else:
@@ -82,7 +82,9 @@ class Graph:
 if __name__ == "__main__":
     input = Graph()
 
-    input.read_input('/test/input.txt')
+    file_path = os.getcwd() + '/test/arad.txt'
+
+    input.read_input(file_path)
 
     nodes = input.get_nodes()
 
@@ -95,7 +97,7 @@ if __name__ == "__main__":
     for i in range(len(adj)):
         print(adj[i])
     
-    input.read_input_coords('/test/input.txt')
+    # input.read_input_coords(file_path)
 
-    print('Coords:')
-    print(input.get_coords())
+    # print('Coords:')
+    # print(input.get_coords())

@@ -68,15 +68,13 @@ def a_star(weighted_matrix, coords, start, goal):
                     f_value[neighbor] = g_value[neighbor] + distance(coords[neighbor], coords[goal])
                     heapq.heappush(queued_node, (f_value[neighbor], neighbor))
 
-    return None;
+    return None
 
 if __name__ == "__main__":
     input = Graph()
 
-    input.read_input('/test/arad.txt')
-    nodes = input.get_nodes()
-
-    adj = input.get_adj()
+    import os
+    file_path = os.getcwd() + '/test/arad.txt'
 
     # print('Nodes:')
     # for i in range(len(nodes)):
@@ -85,8 +83,8 @@ if __name__ == "__main__":
     # for i in range(len(adj)):
     #     print(adj[i])
     
-    input.read_input_coords('/test/arad.txt')
-    input.calculate_weighted();
+    input.read_input_coords(file_path)
+    input.calculate_weighted()
 
     # weighted_graph = input.get_weighted();
 
