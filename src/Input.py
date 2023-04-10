@@ -37,6 +37,8 @@ class Graph:
                 line = file.readline()
                 line = line.split()
                 # add coords to dictionary
+                if (len(line) < 3):
+                    raise Exception('Invalid input file')
                 lat = line[1]
                 long = line[2]
                 self.coords[i] = (lat, long)
