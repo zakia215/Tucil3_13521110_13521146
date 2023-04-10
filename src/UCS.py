@@ -62,30 +62,30 @@ def ucs(graph, start, goal):
     return None
 
 if __name__ == "__main__":
+    import os
     input = Graph()
 
-    input.read_input('/test/arad.txt')
-    nodes = input.get_nodes()
+    file_path = os.getcwd() + '/test/arad.txt'
+    print(file_path)
 
-    adj = input.get_adj()
 
-    print('Nodes:')
-    for i in range(len(nodes)):
-        print(i, nodes[i])
-    print('Adjecency:')
-    for i in range(len(adj)):
-        print(adj[i])
+    # print('Nodes:')
+    # for i in range(len(nodes)):
+    #     print(i, nodes[i])
+    # print('Adjecency:')
+    # for i in range(len(adj)):
+    #     print(adj[i])
     
-    input.read_input_coords('/test/arad.txt')
-    input.calculate_weighted();
+    input.read_input_coords(file_path)
+    input.calculate_weighted()
 
-    weighted_graph = input.get_weighted();
+    weighted_graph = input.get_weighted()
 
-    print('Coords:')
-    print(input.get_coords())
+    # print('Coords:')
+    # print(input.get_coords())
 
-    for i in range(len(weighted_graph)):
-        print(weighted_graph[i])
+    # for i in range(len(weighted_graph)):
+    #     print(weighted_graph[i])
 
     res = ucs(input.get_weighted(), 0, 1)
     print(res)
