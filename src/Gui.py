@@ -1,6 +1,134 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtWebEngineWidgets import *
 import AStar, Input, UCS
 import os
+import folium
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        self.map_widget = self.ui.map_widget
+
+        # create a Folium map centered on a specific location
+        location = [-6.891166851249083, 107.61068223565846]  # New York City
+        m = folium.Map(location=location, zoom_start=20)
+
+        folium.ClickForMarker().add_to(m)
+
+        # convert the map to HTML
+        map_html = m._repr_html_()
+
+        # create a QWebEngineView to display the map
+        self.webview = QWebEngineView()
+        self.webview.setHtml(map_html)
+        self.map_widget.setLayout(QVBoxLayout())
+        self.map_widget.layout().addWidget(self.webview)
+        self.ui.pushButton.clicked.connect(self.openFileNameDialog)
+        self.ui.search_botton.clicked.connect(self.searchPath)
+
+    def openFileNameDialog(self):
+        options = QtWidgets.QFileDialog.Options()
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose map file", os.getcwd(), 
+                                                            "Text Files (*.txt)", options=options)
+        if fileName:
+            name = fileName.split("/")[-1]
+            print(fileName)
+            self.ui.lineEdit.setText(name)
+            self.ui.graph = Input.Graph()
+            self.ui.input_check = True
+            try:
+                if self.ui.type_map.currentText() == "with coords":
+                    self.ui.graph.read_input_coords(fileName)
+                else:
+                    self.ui.graph.read_input(fileName)
+            except Exception as e:
+                self.ui.warning("Invalid map type")
+                self.ui.lineEdit.setText("")
+                self.ui.input_check = False
+                return
+            self.update_map()
+            self.ui.add_nodes()
+    
+    def update_map(self):
+        nodes = self.ui.graph.get_nodes()
+        adj_matrix = self.ui.graph.get_adj()
+        coord = self.ui.graph.get_coords()
+        coord_tuples = []
+        for i in range(len(adj_matrix)):
+            to_float = (float(coord[i][0]), float(coord[i][1]))
+            coord_tuples.append(to_float)
+        # initialize the sums
+        sum_lat = 0
+        sum_lon = 0
+
+        # iterate over the coordinates and sum up the values
+        for lat, lon in coord_tuples:
+            sum_lat += lat
+            sum_lon += lon
+
+        # calculate the averages
+        avg_lat = sum_lat / len(coord_tuples)
+        avg_lon = sum_lon / len(coord_tuples)
+
+        self.m = folium.Map(location=[avg_lat, avg_lon], zoom_start=15)
+
+        for i in range(len(nodes)):
+            tooltip = folium.Tooltip(nodes[i])
+            temp_marker = folium.Marker(location=[coord_tuples[i][0], coord_tuples[i][1]], tooltip=tooltip)
+            temp_marker.add_to(self.m);
+
+        for i in range(len(adj_matrix)):
+            for j in range(i):
+                if adj_matrix[i][j] != 0:
+                    line = folium.PolyLine(locations=[[coord_tuples[i][0], coord_tuples[i][1]], [coord_tuples[j][0], coord_tuples[j][1]]], color='red')
+                    line.add_to(self.m)
+
+        # convert the updated map to HTML
+        self.map_html = self.m._repr_html_()
+        # update the QWebEngineView to display the updated map
+        self.webview.setHtml(self.map_html)
+
+    def searchPath(self):
+        if not self.ui.input_check:
+            self.ui.warning("Please choose a file")
+            return
+        self.ui.clear_result()
+        source = self.ui.soure_nodes.findText(self.ui.soure_nodes.currentText())
+        dest = self.ui.dest_nodes.findText(self.ui.dest_nodes.currentText())
+        algo = self.ui.search_alg.currentText()
+        self.ui.graph.calculate_weighted()
+        weighted = self.ui.graph.get_weighted()
+        coords = self.ui.graph.get_coords()
+        nodes = self.ui.graph.get_nodes()
+        print(weighted)
+        if algo == "UCS":
+            self.ui.result = UCS.ucs(weighted, source, dest)
+        else:
+            self.ui.result = AStar.a_star(weighted, coords, source, dest)
+        path = ""
+        for i in range(len(self.ui.result[0])):
+            idx = self.ui.result[0][i]
+            path += str(self.ui.graph.get_nodes()[idx])
+            if i != len(self.ui.result[0]) - 1:
+                path += " -> "
+        distance = str(round(self.ui.result[1], 4))
+        for i in range(len(self.ui.result[0]) - 1):
+            from_coor = self.ui.result[0][i]
+            to_coor = self.ui.result[0][i + 1]
+            line = folium.PolyLine(locations=[[float(coords[from_coor][0]), float(coords[from_coor][1])], [float(coords[to_coor][0]), float(coords[to_coor][1])]], color='cyan')
+            line.add_to(self.m)
+        # convert the updated map to HTML
+        self.map_html = self.m._repr_html_()
+        # update the QWebEngineView to display the updated map
+        self.webview.setHtml(self.map_html)
+        self.ui.path_result.setText(path)
+        self.ui.dist_result.setText(distance)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -10,10 +138,9 @@ class Ui_MainWindow(object):
         MainWindow.setAnimated(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.graph_view = QtWidgets.QGraphicsView(self.centralwidget)
-        self.graph_view.setGeometry(QtCore.QRect(350, 50, 481, 341))
-        self.graph_view.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.graph_view.setObjectName("graph_view")
+        self.map_widget = QWidget(self.centralwidget)
+        self.map_widget.setGeometry(350, 50, 481, 341)
+        self.map_widget.setObjectName("map_widget")
         self.search_botton = QtWidgets.QPushButton(self.centralwidget)
         self.search_botton.setGeometry(QtCore.QRect(110, 370, 81, 31))
         self.search_botton.setObjectName("search_botton")
@@ -119,9 +246,9 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.lineEdit.setReadOnly(True)
-        self.pushButton.clicked.connect(self.openFileNameDialog)
+        # self.pushButton.clicked.connect(self.openFileNameDialog)
 
-        self.search_botton.clicked.connect(self.searchPath)
+        # self.search_botton.clicked.connect(self.searchPath)
 
         self.input_check = False
 
@@ -142,28 +269,6 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Open File"))
         self.nodes_title.setText(_translate("MainWindow", "Choose Nodes"))
 
-    def openFileNameDialog(self):
-        options = QtWidgets.QFileDialog.Options()
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose map file", os.getcwd(), 
-                                                            "Text Files (*.txt)", options=options)
-        if fileName:
-            name = fileName.split("/")[-1]
-            print(fileName)
-            self.lineEdit.setText(name)
-            self.graph = Input.Graph()
-            self.input_check = True
-            try:
-                if self.type_map.currentText() == "with coords":
-                    self.graph.read_input_coords(fileName)
-                else:
-                    self.graph.read_input(fileName)
-            except Exception as e:
-                self.warning("Invalid map type")
-                self.lineEdit.setText("")
-                self.input_check = False
-                return
-            self.add_nodes()
-    
     def add_nodes(self):
         self.clear_nodes()
         nodes = self.graph.get_nodes()
@@ -176,32 +281,6 @@ class Ui_MainWindow(object):
     def clear_nodes(self):
         self.soure_nodes.clear()
         self.dest_nodes.clear()
-
-    def searchPath(self):
-        if not self.input_check:
-            self.warning("Please choose a file")
-            return
-        self.clear_result()
-        source = self.soure_nodes.findText(self.soure_nodes.currentText())
-        dest = self.dest_nodes.findText(self.dest_nodes.currentText())
-        algo = self.search_alg.currentText()
-        self.graph.calculate_weighted()
-        weighted = self.graph.get_weighted()
-        coords = self.graph.get_coords()
-        print(weighted)
-        if algo == "UCS":
-            self.result = UCS.ucs(weighted, source, dest)
-        else:
-            self.result = AStar.a_star(weighted, coords, source, dest)
-        path = ""
-        for i in range(len(self.result[0])):
-            idx = self.result[0][i]
-            path += str(self.graph.get_nodes()[idx])
-            if i != len(self.result[0]) - 1:
-                path += " -> "
-        distance = str(round(self.result[1], 4))
-        self.path_result.setText(path)
-        self.dist_result.setText(distance)
 
     def clear_result(self):
         self.path_result.setText("")
@@ -217,9 +296,10 @@ class Ui_MainWindow(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    app = QApplication(sys.argv)
+    MyMainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui.setupUi(MyMainWindow)
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec_())
