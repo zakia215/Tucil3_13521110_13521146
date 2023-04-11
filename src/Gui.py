@@ -27,7 +27,8 @@ class MainWindow(QMainWindow):
         self.ui.search_botton.clicked.connect(self.searchPath)
         self.ui.clear_map_button.clicked.connect(self.reset_map)
         self.ui.input_mode.stateChanged.connect(lambda: self.input_change())
-
+        self.ui.show_graph.clicked.connect(lambda: self.folium_graph())
+        
 
     def openFileNameDialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -102,6 +103,10 @@ class MainWindow(QMainWindow):
             self.ui.result = UCS.ucs(weighted, source, dest)
         else:
             self.ui.result = AStar.a_star(weighted, coords, source, dest)
+        if self.ui.result == None:
+            self.ui.path_result.setText("No path found")
+            self.ui.dist_result.setText("No path found")
+            return
         path = ""
         for i in range(len(self.ui.result[0])):
             idx = self.ui.result[0][i]
@@ -141,7 +146,9 @@ class MainWindow(QMainWindow):
     def folium_graph(self):
         # create graph from markers in folium map
         self.ui.graph = Input.Graph()
-        self.ui.input_check = True
+        coords = []
+        
+        # self.ui.input_check = True
         
 
 class Ui_MainWindow(object):
