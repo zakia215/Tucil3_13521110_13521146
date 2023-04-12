@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose map file", os.getcwd(), 
                                                             "Text Files (*.txt)", options=options)
         if fileName:
+            self.ui.clear_input()
             name = fileName.split("/")[-1]
             self.ui.graph = Input.Graph()
             try:
@@ -47,10 +48,16 @@ class MainWindow(QMainWindow):
                 self.ui.input_check = False
                 self.ui.warning("Nodes must be more than 8")
                 return
-            self.ui.input_check = True
             self.ui.file_name.setText(name)
-            self.update_map()
+            try:
+                self.update_map()
+            except Exception as e:
+                self.ui.warning("Invalid input file")
+                self.ui.input_check = False
+                return
             self.ui.add_nodes()
+            self.ui.input_check = True
+
     
     def update_map(self):
         nodes = self.ui.graph.get_nodes()
@@ -118,7 +125,7 @@ class MainWindow(QMainWindow):
             path += str(self.ui.graph.get_nodes()[idx])
             if i != len(self.ui.result[0]) - 1:
                 path += " -> "
-        distance = str(round(self.ui.result[1], 4)) + " m"
+        distance = str(round(self.ui.result[1], 4)) + " km"
         for i in range(len(self.ui.result[0]) - 1):
             from_coor = self.ui.result[0][i]
             to_coor = self.ui.result[0][i + 1]
@@ -367,6 +374,13 @@ class Ui_MainWindow(object):
     def clear_result(self):
         self.path_result.setText("")
         self.dist_result.setText("")
+    
+    def clear_input(self):
+        self.input_check = False
+        self.clear_nodes()
+        self.clear_result()
+        self.file_name.setText("")
+
     
     def warning(self, message):
         msg = QtWidgets.QMessageBox()
