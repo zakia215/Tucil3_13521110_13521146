@@ -111,10 +111,15 @@ class MainWindow(QMainWindow):
         self.ui.graph.calculate_weighted()
         weighted = self.ui.graph.get_weighted()
         coords = self.ui.graph.get_coords()
-        if algo == "UCS":
-            self.ui.result = UCS.ucs(weighted, source, dest)
-        else:
-            self.ui.result = AStar.a_star(weighted, coords, source, dest)
+        try:
+            if algo == "UCS":
+                self.ui.result = UCS.ucs(weighted, source, dest)
+            else:
+                self.ui.result = AStar.a_star(weighted, coords, source, dest)
+        except Exception as e:
+            self.ui.warning("Invalid Format Detected")
+            self.ui.clear_input()
+            return
         if self.ui.result == None:
             self.ui.path_result.setText("No path found")
             self.ui.dist_result.setText("No path found")
