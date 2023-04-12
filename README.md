@@ -67,15 +67,10 @@ Project is: _complete_
 | Poin                                                      |  Ya | Tidak  |
 | -----------                                               | ----|  ----  |
 | 1. Program dapat menerima input graf                        | ✓  |        |
-| 2. Program dapat menghitung lintasan terpendek dengan
-UCS                                                          | ✓  |        |
-| 3.  Program dapat menghitung lintasan terpendek dengan
-A*                                                            | ✓ |         |
-| 4.Program dapat menampilkan lintasan terpendek serta
-jaraknya                                                      | ✓ |         |
-| 5. Bonus: Program dapat menerima input peta dengan
-Google Map API dan menampilkan peta serta lintasan
-terpendek pada peta                                           | |      ✓    |
+| 2. Program dapat menghitung lintasan terpendek dengan UCS                                                          | ✓  |        |
+| 3.  Program dapat menghitung lintasan terpendek dengan A*                                                            | ✓ |         |
+| 4.Program dapat menampilkan lintasan terpendek serta jaraknya                                                      | ✓ |         |
+| 5. Bonus: Program dapat menerima input peta dengan Google Map API dan menampilkan peta serta lintasan terpendek pada peta                                           | |      ✓    |
 
 <!-- Optional -->
 <!-- ## License -->
