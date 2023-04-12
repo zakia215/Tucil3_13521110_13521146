@@ -12,7 +12,9 @@ def distance(coord1, coord2) -> float:
     :return: Euclidean distance between two coordinates
     """
 
-    return haversine(coord1, coord2)
+    coords1 = (float(coord1[0]), float(coord1[1]))
+    coords2 = (float(coord2[0]), float(coord2[1]))
+    return haversine(coords1, coords2)
 
 def a_star(weighted_matrix, coords, start, goal) -> tuple:
     """
