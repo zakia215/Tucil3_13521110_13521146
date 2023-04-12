@@ -93,6 +93,7 @@ class MainWindow(QMainWindow):
             self.ui.warning("No input detected")
             return
         self.ui.clear_result()
+        self.update_map()
         source = self.ui.soure_nodes.findText(self.ui.soure_nodes.currentText())
         dest = self.ui.dest_nodes.findText(self.ui.dest_nodes.currentText())
         algo = self.ui.search_alg.currentText()
