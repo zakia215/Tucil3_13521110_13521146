@@ -51,27 +51,29 @@ class Graph:
     def calculate_weighted(self): 
         distance = {}
         self.weighted = []
-        for i in range(len(self.adj)):
-            line = []
-            for j in range(len(self.adj[i])):
-                if self.adj[i][j] != 0:
-                    string_key = self.nodes[i] + self.nodes[j]
-                    flipped_key = self.nodes[j] + self.nodes[i]
-                    if string_key in distance:
-                        line.append(distance[string_key])
-                    elif flipped_key in distance:
-                        line.append(distance[flipped_key])
-                    else :
-                        coord_a = self.coords[i]
-                        coord_b = self.coords[j]
-                        float_a = (float(coord_a[0]), float(coord_a[1]))
-                        float_b = (float(coord_b[0]), float(coord_b[1]))
-                        res = haversine(float_a, float_b)
-                        distance[string_key] = res
-                        line.append(distance[string_key])
-                else:
-                    line.append(0)
-            self.weighted.append(line)
+        if (len(self.adj) == len(self.adj[0])):
+            for i in range(len(self.adj)):
+                line = []
+                for j in range(len(self.adj[i])):
+                    if self.adj[i][j] != 0:
+                        string_key = self.nodes[i] + self.nodes[j]
+                        flipped_key = self.nodes[j] + self.nodes[i]
+                        if string_key in distance:
+                            line.append(distance[string_key])
+                        elif flipped_key in distance:
+                            line.append(distance[flipped_key])
+                        else :
+                            coord_a = self.coords[i]
+                            coord_b = self.coords[j]
+                            float_a = (float(coord_a[0]), float(coord_a[1]))
+                            float_b = (float(coord_b[0]), float(coord_b[1]))
+                            res = haversine(float_a, float_b)
+                            distance[string_key] = res
+                            line.append(distance[string_key])
+                    else:
+                        line.append(0)
+                self.weighted.append(line)
+            
         
     # getters    
     def get_nodes(self) -> list:
