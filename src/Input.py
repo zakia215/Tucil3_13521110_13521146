@@ -54,7 +54,7 @@ class Graph:
         for i in range(len(self.adj)):
             line = []
             for j in range(len(self.adj[i])):
-                if self.adj[i][j] == 1:
+                if self.adj[i][j] != 0:
                     string_key = self.nodes[i] + self.nodes[j]
                     flipped_key = self.nodes[j] + self.nodes[i]
                     if string_key in distance:

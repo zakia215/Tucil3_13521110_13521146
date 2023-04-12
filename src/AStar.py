@@ -1,6 +1,7 @@
 import heapq
 import math
 from Input import Graph
+from haversine import haversine
 
 def distance(coord1, coord2) -> float:
     """
@@ -11,7 +12,7 @@ def distance(coord1, coord2) -> float:
     :return: Euclidean distance between two coordinates
     """
 
-    return math.sqrt((float(coord2[0]) - float(coord1[0])) ** 2 + (float(coord2[1]) - float(coord1[1])) ** 2)
+    return haversine(coord1, coord2)
 
 def a_star(weighted_matrix, coords, start, goal) -> tuple:
     """
