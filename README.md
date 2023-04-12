@@ -51,9 +51,15 @@ Pemakaian program
 
 1. Menu Program
 
+   ![MainPage](./img/main.png)
+
 2. Contoh Input
 
+   ![InputPage](./img/input.png)
+
 3. Contoh Hasil
+
+   ![ResultPage](./img/result.png)
 
 ## Project Status
 
