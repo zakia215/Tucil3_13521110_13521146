@@ -3,12 +3,16 @@ from haversine import haversine, Unit
 
 class Graph:
     def __init__ (self):
-        self.n = 0
-        self.nodes = []
-        self.coords = {}
-        self.adj = []
-        self.weighted = []
+        self.n : int = 0              # number of nodes
+        self.nodes : list = []         # list of nodes
+        
+        # dictionary of coordinates (key = node, value = (lat, long))
+        self.coords : dict = {} 
 
+        self.adj : list = []           # adjecency matrix
+        self.weighted : list = []      # weighted adjecency matrix
+
+    # read input from file (without coordinates)
     def read_input(self, file_name: str):
         with open(file_name, 'r') as file:
             line = file.readline()
@@ -26,8 +30,8 @@ class Graph:
                 line = line.split()
                 line = [int(x) for x in line]
                 self.adj.append(line)
-            
-       
+
+    # read input from file (with coordinates)            
     def read_input_coords(self, file_name: str): 
         self.read_input(file_name)
         with open(file_name, 'r') as file:
@@ -43,6 +47,7 @@ class Graph:
                 long = line[2]
                 self.coords[i] = (lat, long)
     
+    # calculate the weighted adjecency matrix
     def calculate_weighted(self): 
         distance = {}
         self.weighted = []
@@ -68,16 +73,14 @@ class Graph:
                     line.append(0)
             self.weighted.append(line)
         
-    def get_nodes(self):
+    # getters    
+    def get_nodes(self) -> list:
         return self.nodes
-
-    def get_adj(self):
+    def get_adj(self) -> list:
         return self.adj
-    
-    def get_coords(self):
+    def get_coords(self) -> dict:
         return self.coords
-    
-    def get_weighted(self):
+    def get_weighted(self) -> list:
         return self.weighted
        
 

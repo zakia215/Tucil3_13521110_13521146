@@ -2,7 +2,7 @@ import heapq
 import math
 from Input import Graph
 
-def distance(coord1, coord2):
+def distance(coord1, coord2) -> float:
     """
     Calculate the distance between two 2-dimensional coordinates
 
@@ -13,7 +13,7 @@ def distance(coord1, coord2):
 
     return math.sqrt((float(coord2[0]) - float(coord1[0])) ** 2 + (float(coord2[1]) - float(coord1[1])) ** 2)
 
-def a_star(weighted_matrix, coords, start, goal):
+def a_star(weighted_matrix, coords, start, goal) -> tuple:
     """
     Find the shortest path from start to goal using A* algorithm
 

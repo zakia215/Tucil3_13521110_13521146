@@ -1,13 +1,13 @@
 import heapq
 from Input import Graph
 
-def count_distance(path, weighted):
+def count_distance(path, weighted) -> float:
     distance = 0
     for i in range(len(path) - 1):
         distance += weighted[path[i]][path[i + 1]]
     return distance
 
-def ucs(graph, start, goal):
+def ucs(graph, start, goal) -> tuple:
     """
     Finds the shortest path from start to goal using Uniform Cost Search algorithm.
 
