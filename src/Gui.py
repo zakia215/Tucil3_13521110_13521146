@@ -48,10 +48,16 @@ class MainWindow(QMainWindow):
                 self.ui.input_check = False
                 self.ui.warning("Nodes must be more than 8")
                 return
-            self.ui.input_check = True
             self.ui.file_name.setText(name)
-            self.update_map()
+            try:
+                self.update_map()
+            except Exception as e:
+                self.ui.warning("Invalid input file")
+                self.ui.input_check = False
+                return
             self.ui.add_nodes()
+            self.ui.input_check = True
+
     
     def update_map(self):
         nodes = self.ui.graph.get_nodes()

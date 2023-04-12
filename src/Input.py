@@ -19,17 +19,29 @@ class Graph:
             # number of nodes
             self.n = int(line)
             # read the nodes
+            node_n = 0
             for _ in range(self.n):
                 line = file.readline()
+                if line.strip() == '':
+                    raise Exception('Invalid input file')
                 line = line.split()
                 node = line[0]
                 self.nodes.append(node)
+                node_n += 1
+            if node_n != self.n:
+                raise Exception('Invalid input file')
             # read the adjecency matrix
+            adj_n = 0
             for _ in range(self.n):
                 line = file.readline()
+                if line.strip() == '':
+                    raise Exception('Invalid input file')
                 line = line.split()
                 line = [int(x) for x in line]
                 self.adj.append(line)
+                adj_n += 1
+            if adj_n != self.n:
+                raise Exception('Invalid input file')
 
     # read input from file (with coordinates)            
     def read_input_coords(self, file_name: str): 
