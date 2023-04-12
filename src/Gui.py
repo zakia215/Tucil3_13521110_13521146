@@ -43,6 +43,10 @@ class MainWindow(QMainWindow):
                 self.ui.input_check = False
                 self.ui.warning("Invalid input file")
                 return
+            if len(self.ui.graph.get_nodes()) < 8:
+                self.ui.input_check = False
+                self.ui.warning("Nodes must be more than 8")
+                return
             self.ui.input_check = True
             self.ui.file_name.setText(name)
             self.update_map()
@@ -114,7 +118,7 @@ class MainWindow(QMainWindow):
             path += str(self.ui.graph.get_nodes()[idx])
             if i != len(self.ui.result[0]) - 1:
                 path += " -> "
-        distance = str(round(self.ui.result[1], 4))
+        distance = str(round(self.ui.result[1], 4)) + " m"
         for i in range(len(self.ui.result[0]) - 1):
             from_coor = self.ui.result[0][i]
             to_coor = self.ui.result[0][i + 1]
@@ -320,6 +324,11 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.input_check = False
         self.path_result.setWordWrap(True)
+
+        self.input_mode.hide()
+        self.show_graph.hide()
+        self.clear_map_button.hide()
+        self.type_fram.hide()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
